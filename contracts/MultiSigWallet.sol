@@ -1,4 +1,4 @@
-pragma solidity ^0.4.15;
+pragma solidity ^0.4.23;
 
 contract MultiSigWallet {
     address private _owner;
@@ -59,14 +59,14 @@ contract MultiSigWallet {
         emit DepositFunds(msg.sender, msg.value);
     }
 
+    // @ dev Transfer ether to owner
     function withdraw(uint amount) public {
-        transferTo(msg.sender, amount);
+        // YOUR CODE HERE
     }
 
     /// @dev Send ether to specific a transaction.
-    /// @param destination: Transaction target address.
-    /// @param value:  Transaction ether value.
-    ///
+    /// @param destination - Transaction target address.
+    /// @param value - Transaction ether value.
     /// Start by creating your transaction. Since we defined it as a struct,
     /// we need to define it in a memory context. Update the member attributes.
     ///
@@ -77,18 +77,13 @@ contract MultiSigWallet {
         // will always be unique, until max uint
         uint transactionID = _transactionIndex++;
 
-        //create the transaction
-        Transaction memory transaction;
-        transaction.source = msg.sender;
-        transaction.destination = msg.sender;
-        transaction.value = value;
-        transaction.signatureCount = 0;
+        // TODO: Create the transaction
+        // YOUR CODE HERE 
 
-        //add transaction to the data structures
-        _transactions[transactionID] = transaction;
-        _pendingTransactions.push(transactionID);
+        // TODO: Add transaction to the data structures
+        // YOUR CODE HERE
 
-        //log that the transaction was created to a specific address
+        // log that the transaction was created to a specific address
         emit TransactionCreated(msg.sender, destination, value, transactionID);
     }
 
@@ -98,7 +93,7 @@ contract MultiSigWallet {
     }
 
     /// @dev Allows an owner to confirm a transaction.
-    /// @param transactionId Transaction ID.
+    /// @param transactionID Transaction ID.
     /// Sign and Execute transaction.
     function signTransaction(uint transactionID) validOwner public {
         // Use Transaction Structure. Above in TransferTo function, because
@@ -112,33 +107,36 @@ contract MultiSigWallet {
 
         // Transaction must exist, note: can't do require(transaction).
         require(0x0 != transaction.source);
+
         // Creator cannot sign the transaction
-        require(msg.sender != transaction.source);
+        // YOUR CODE HERE
+
         // Cannot sign a transaction more than once
-        require(transaction.signatures[msg.sender] != 1);
+        // YOUR CODE HERE
 
         // Assign the transaction = 1, so that when the function is called again it will fail
-        transaction.signatures[msg.sender] = 1;
+        // YOUR CODE HERE
+
         // Increment signatureCount
-        transaction.signatureCount++;
+        // YOUR CODE HERE
 
         // log transaction
         emit TransactionSigned(msg.sender, transactionID);
 
         // Check to see if transaction has enough signatures so that it can actually be completed
         // if true, make the transaction
-        if (transaction.signatureCount >= MIN_SIGNATURES) {
-            require(address(this).balance >= transaction.value); //validate transaction
-            transaction.destination.transfer(transaction.value);
+        // YOUR CODE HERE
+        if () { // Step 0. Add conditional
+            // Step 1. Ensure there are enough funds
+            // Step 2. Send the ETH
 
-            //log that the transaction was complete
+            // log that the transaction was complete
             emit TransactionCompleted(transaction.source, transaction.destination, transaction.value, transactionID);
-            //call deleteTransaction
-            deleteTransaction(transactionID);
+            // Step 3. Delete the Transaction
         }
     }
 
-    /// @dev clean up function
+    /// @dev Remove transaction from the pending
     function deleteTransaction(uint transactionId) validOwner public {
         uint8 replace = 0;
         for(uint i = 0; i < _pendingTransactions.length; i++) {
