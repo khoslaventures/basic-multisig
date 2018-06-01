@@ -80,7 +80,7 @@ contract MultiSigWallet {
         //create the transaction
         Transaction memory transaction;
         transaction.source = msg.sender;
-        transaction.destination = msg.sender;
+        transaction.destination = destination;
         transaction.value = value;
         transaction.signatureCount = 0;
 
